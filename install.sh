@@ -63,3 +63,30 @@ else
 fi
 
 echo "make installed successfully!"
+
+echo "Adding 'commit_in_branch' function to ~/.bashrc..."
+
+# Define the function text
+COMMIT_FUNC='
+# Check if a commit is in the current branch
+commit_in_branch() {
+  if [ -z "$1" ]; then
+    echo "Usage: commit_in_branch <commit-hash>"
+    return 1
+  fi
+
+  if git merge-base --is-ancestor "$1" HEAD; then
+    echo "✅ Commit $1 is in the current branch."
+  else
+    echo "❌ Commit $1 is NOT in the current branch."
+  fi
+}
+'
+
+# Only add the function if it's not already present
+if ! grep -q "commit_in_branch()" ~/.bashrc; then
+    echo "$COMMIT_FUNC" >> ~/.bashrc
+    echo "Function added to ~/.bashrc."
+else
+    echo "'commit_in_branch' already exists in ~/.bashrc."
+fi
